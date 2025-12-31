@@ -10,12 +10,111 @@
         .logo-container { width: 180px; height: 80px; display: flex; align-items: center; justify-content: center; }
         .logo-container img { max-width: 100%; max-height: 100%; object-fit: contain; }
         html { scroll-behavior: smooth; }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .animate-fade-in-up { animation: fadeInUp 0.8s ease-out forwards; }
+        .animate-slide-in { animation: slideIn 0.8s ease-out forwards; }
+        
+        .story-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .story-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .parallax {
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #ec4899 0%, #f43f5e 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .quote-card {
+            position: relative;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(236, 72, 153, 0.05) 0%, rgba(244, 63, 94, 0.05) 100%);
+            border-left: 4px solid #ec4899;
+        }
+        
+        .quote-card::before {
+            content: '"';
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            font-size: 60px;
+            color: #ec4899;
+            opacity: 0.3;
+        }
+        
+        .interactive-stat {
+            transition: all 0.3s ease;
+        }
+        
+        .interactive-stat:hover {
+            transform: scale(1.1);
+        }
+        
+        .img-placeholder {
+            background: linear-gradient(135deg, #fce7f3 0%, #ffe4e6 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .img-placeholder::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+        
+        @keyframes shimmer {
+            to { left: 100%; }
+        }
+        
+        .testimonial-slider {
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        
+        .testimonial-slider::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .testimonial-slide {
+            scroll-snap-align: start;
+            flex-shrink: 0;
+        }
     </style>
 </head>
 <body class="bg-white">
     
     <!-- Navigation -->
-    <nav class="fixed w-full z-50 bg-white shadow-lg">
+    <nav class="fixed w-full z-50 bg-white shadow-lg transition-all duration-300" id="navbar">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-24">
                 <div class="flex items-center space-x-4">
@@ -28,12 +127,13 @@
                     </div>
                 </div>
                 <div class="hidden md:flex space-x-6">
-                    <a href="#home" class="text-gray-700 hover:text-pink-600 font-medium">Home</a>
-                    <a href="#about" class="text-gray-700 hover:text-pink-600 font-medium">About</a>
-                    <a href="#pillars" class="text-gray-700 hover:text-pink-600 font-medium">Pillars</a>
-                    <a href="#business" class="text-gray-700 hover:text-pink-600 font-medium">Business</a>
-                    <a href="#membership" class="text-gray-700 hover:text-pink-600 font-medium">Membership</a>
-                    <a href="#contact" class="text-gray-700 hover:text-pink-600 font-medium">Contact</a>
+                    <a href="#home" class="nav-link text-gray-700 hover:text-pink-600 font-medium transition-colors">Home</a>
+                    <a href="#stories" class="nav-link text-gray-700 hover:text-pink-600 font-medium transition-colors">Stories</a>
+                    <a href="#about" class="nav-link text-gray-700 hover:text-pink-600 font-medium transition-colors">About</a>
+                    <a href="#pillars" class="nav-link text-gray-700 hover:text-pink-600 font-medium transition-colors">Pillars</a>
+                    <a href="#business" class="nav-link text-gray-700 hover:text-pink-600 font-medium transition-colors">Business</a>
+                    <a href="#membership" class="nav-link text-gray-700 hover:text-pink-600 font-medium transition-colors">Membership</a>
+                    <a href="#contact" class="nav-link text-gray-700 hover:text-pink-600 font-medium transition-colors">Contact</a>
                 </div>
                 <button id="mobile-menu-btn" class="md:hidden p-2">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -45,6 +145,7 @@
         <div id="mobile-menu" class="hidden md:hidden bg-white border-t">
             <div class="px-4 py-4 space-y-3">
                 <a href="#home" class="block text-gray-700 hover:text-pink-600 font-medium">Home</a>
+                <a href="#stories" class="block text-gray-700 hover:text-pink-600 font-medium">Stories</a>
                 <a href="#about" class="block text-gray-700 hover:text-pink-600 font-medium">About</a>
                 <a href="#pillars" class="block text-gray-700 hover:text-pink-600 font-medium">Pillars</a>
                 <a href="#business" class="block text-gray-700 hover:text-pink-600 font-medium">Business</a>
@@ -58,56 +159,223 @@
     <section id="home" class="pt-32 pb-20 px-4 bg-gradient-to-br from-pink-50 via-rose-50 to-white">
         <div class="max-w-7xl mx-auto">
             <div class="grid md:grid-cols-2 gap-12 items-center">
-                <div>
-                    <h2 class="text-5xl md:text-6xl font-bold text-gray-900 mb-6">Empowering <span class="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-rose-500">Mompreneurs</span></h2>
+                <div class="animate-slide-in">
+                    <h2 class="text-5xl md:text-6xl font-bold text-gray-900 mb-6">Empowering <span class="gradient-text">Mompreneurs</span></h2>
                     <p class="text-2xl text-pink-600 mb-4 font-bold">Where Legacies Are Created</p>
-                    <p class="text-xl text-gray-700 mb-4 font-semibold">"When a Young Mother is EMPOWERED she empowers the next GENERATION."</p>
+                    <p class="text-xl text-gray-700 mb-4 font-semibold italic">"When a Young Mother is EMPOWERED she empowers the next GENERATION."</p>
                     <p class="text-lg text-gray-600 mb-8">- Monica Dube-Sekhwela, Founder</p>
                     <div class="flex flex-wrap gap-4">
-                        <button onclick="openMembershipForm()" class="bg-gradient-to-r from-pink-500 to-rose-500 text-white px-8 py-4 rounded-full font-semibold hover:shadow-xl transform hover:scale-105 transition-all">Join Our Community →</button>
-                        <a href="#about" class="border-2 border-pink-600 text-pink-600 px-8 py-4 rounded-full font-semibold hover:bg-pink-50 transition-all">Our Story</a>
+                        <a href="https://docs.google.com/forms/d/e/1FAIpQLSd66S66RpYtTO4W8-61avVgMa7dwm2Wsj3ERXO_VbfLd8FYgw/viewform?usp=header" target="_blank" class="bg-gradient-to-r from-pink-500 to-rose-500 text-white px-8 py-4 rounded-full font-semibold hover:shadow-xl transform hover:scale-105 transition-all">Join Our Community →</a>
+                        <a href="#stories" class="border-2 border-pink-600 text-pink-600 px-8 py-4 rounded-full font-semibold hover:bg-pink-50 transition-all">Read Stories</a>
                     </div>
                 </div>
-                <div class="bg-gradient-to-br from-pink-400 to-rose-400 rounded-3xl h-96 flex items-center justify-center shadow-2xl">
-                    <div class="text-center text-white p-8">
-                        <svg class="w-20 h-20 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                        <h3 class="text-3xl font-bold mb-2">150+</h3>
-                        <p class="text-xl">Mompreneurs Empowered</p>
+                <div class="animate-fade-in-up">
+                    <div class="relative">
+                        <div class="img-placeholder rounded-3xl h-96 flex items-center justify-center shadow-2xl overflow-hidden relative">
+                            <img src="4.png" alt="African mother with child" class="w-full h-full object-cover" onerror="this.style.display='none'">
+                            <div class="absolute inset-0 bg-gradient-to-t from-pink-900/50 to-transparent flex items-end p-8">
+                                <div class="text-white">
+                                    <div class="interactive-stat">
+                                        <h3 class="text-4xl font-bold mb-2">150+</h3>
+                                        <p class="text-xl">2026 Impact Goal</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- Stories Section - NEW -->
+    <section id="stories" class="py-20 px-4 bg-white">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">You Are Not Alone</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">Every mother's journey is unique, yet we share common struggles, dreams, and strength. These are our stories.</p>
+            </div>
+
+            <!-- Founder's Story - Generalized -->
+            <div class="mb-20">
+                <div class="grid md:grid-cols-2 gap-12 items-center mb-12">
+                    <div class="img-placeholder rounded-2xl h-96 overflow-hidden">
+                        <img src="5.png" alt="African young mother with child" class="w-full h-full object-cover" onerror="this.style.display='none'">
+                    </div>
+                    <div>
+                        <div class="inline-block bg-pink-100 rounded-full px-4 py-2 mb-4">
+                            <span class="text-pink-700 font-semibold text-sm">Our Mission</span>
+                        </div>
+                        <h3 class="text-3xl font-bold text-gray-900 mb-6">Every Mother Deserves Support</h3>
+                        <div class="space-y-4 text-gray-700">
+                            <p class="leading-relaxed">We understand what it's like to feel alone in motherhood. The sleepless nights filled with worry. The fear about providing for your child. The weight of society's judgment. The dreams that seem impossible.</p>
+                            <p class="leading-relaxed">That's why Strength of a Young Mother exists—to ensure no mother walks this journey alone. We're here to transform your challenges into opportunities, your pain into purpose, and your dreams into reality.</p>
+                            <p class="leading-relaxed">Founded in 2014, we're now setting an ambitious goal: <span class="font-bold text-pink-600">to impact 150+ young mothers in 2026</span>, building a community where mothers find their voice, reclaim their power, and create lasting legacies for their children.</p>
+                            <p class="leading-relaxed font-semibold text-pink-700">Because when we empower one mother, we empower an entire generation.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Relatable Stories Grid -->
+            <div class="grid md:grid-cols-3 gap-8 mb-12">
+                <div class="story-card bg-gradient-to-br from-pink-50 to-white p-8 rounded-2xl shadow-lg">
+                    <div class="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                        </svg>
+                    </div>
+                    <h4 class="text-xl font-bold text-gray-900 mb-4">Thato's Journey: From Unemployed to Business Owner</h4>
+                    <p class="text-gray-700 mb-4">"I lost my job while I was pregnant. I thought my life was over. With STAYM's support, I started a small catering business from home. Today, I employ two other mothers and my daughter has everything she needs."</p>
+                    <p class="text-sm text-pink-600 font-semibold">- Thato, 26, Gaborone</p>
+                </div>
+
+                <div class="story-card bg-gradient-to-br from-rose-50 to-white p-8 rounded-2xl shadow-lg">
+                    <div class="w-16 h-16 bg-rose-100 rounded-full flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                        </svg>
+                    </div>
+                    <h4 class="text-xl font-bold text-gray-900 mb-4">Keabetswe's Healing: Breaking the Cycle</h4>
+                    <p class="text-gray-700 mb-4">"I was in an abusive relationship and felt trapped. Through STAYM's counseling and support group, I found my voice again. I left, rebuilt my life, and now I'm showing my son what healthy love looks like."</p>
+                    <p class="text-sm text-pink-600 font-semibold">- Keabetswe, 29, Francistown</p>
+                </div>
+
+                <div class="story-card bg-gradient-to-br from-pink-50 to-white p-8 rounded-2xl shadow-lg">
+                    <div class="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                        </svg>
+                    </div>
+                    <h4 class="text-xl font-bold text-gray-900 mb-4">Lesego's Dream: Education Against All Odds</h4>
+                    <p class="text-gray-700 mb-4">"I dropped out of school when I got pregnant at 17. Everyone said my life was ruined. STAYM helped me return to school and I'm now studying accounting while running my hair braiding business. My daughter will grow up knowing anything is possible."</p>
+                    <p class="text-sm text-pink-600 font-semibold">- Lesego, 22, Maun</p>
+                </div>
+            </div>
+
+            <!-- Interactive Quote Carousel -->
+            <div class="bg-gradient-to-r from-pink-100 to-rose-100 rounded-2xl p-12 mb-12">
+                <div class="max-w-4xl mx-auto">
+                    <h3 class="text-2xl font-bold text-center text-gray-900 mb-8">What Mothers Are Saying</h3>
+                    <div class="testimonial-slider flex gap-6 overflow-x-auto pb-4" id="testimonialSlider">
+                        <div class="testimonial-slide min-w-full md:min-w-[450px]">
+                            <div class="quote-card bg-white rounded-xl">
+                                <p class="text-gray-700 text-lg mb-4 italic">"Before STAYM, I felt like I was drowning. Every day was a struggle just to survive. Now, I'm not just surviving—I'm building a legacy for my children."</p>
+                                <p class="font-semibold text-pink-600">- Neo, Mother of 2</p>
+                            </div>
+                        </div>
+                        <div class="testimonial-slide min-w-full md:min-w-[450px]">
+                            <div class="quote-card bg-white rounded-xl">
+                                <p class="text-gray-700 text-lg mb-4 italic">"I thought being a young mother meant giving up on my dreams. STAYM taught me that my dreams just got bigger—now they include my daughter too."</p>
+                                <p class="font-semibold text-pink-600">- Bontle, Mompreneur</p>
+                            </div>
+                        </div>
+                        <div class="testimonial-slide min-w-full md:min-w-[450px]">
+                            <div class="quote-card bg-white rounded-xl">
+                                <p class="text-gray-700 text-lg mb-4 italic">"The judgment from society was crushing me. In STAYM, I found sisters who understood. Together, we're rewriting what it means to be a young mother in Botswana."</p>
+                                <p class="font-semibold text-pink-600">- Mpho, Community Member</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex justify-center gap-2 mt-6" id="testimonialDots"></div>
+                </div>
+            </div>
+
+            <!-- Common Struggles We Address -->
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-gray-50 p-8 rounded-2xl">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-6">If You're Feeling...</h3>
+                    <ul class="space-y-4">
+                        <li class="flex items-start gap-3">
+                            <span class="text-pink-600 text-xl">✓</span>
+                            <span class="text-gray-700">Overwhelmed by the responsibility of raising a child alone</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-pink-600 text-xl">✓</span>
+                            <span class="text-gray-700">Judged by society for being a young mother</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-pink-600 text-xl">✓</span>
+                            <span class="text-gray-700">Trapped in a cycle of poverty with no way out</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-pink-600 text-xl">✓</span>
+                            <span class="text-gray-700">Scared about your future and your child's future</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-pink-600 text-xl">✓</span>
+                            <span class="text-gray-700">Isolated and without support</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-pink-600 text-xl">✓</span>
+                            <span class="text-gray-700">Like you've lost yourself in motherhood</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="bg-gradient-to-br from-pink-500 to-rose-500 p-8 rounded-2xl text-white flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold mb-6">You Belong Here</h3>
+                    <p class="text-lg mb-6">STAYM is more than an organization—it's a family. We've walked this path. We understand the tears, the fears, the hopes, and the dreams.</p>
+                    <p class="text-lg mb-6">Together, we're transforming pain into purpose, struggle into strength, and challenges into opportunities.</p>
+                    <a href="https://docs.google.com/forms/d/e/1FAIpQLSd66S66RpYtTO4W8-61avVgMa7dwm2Wsj3ERXO_VbfLd8FYgw/viewform?usp=header" target="_blank" class="bg-white text-pink-600 px-8 py-4 rounded-full font-semibold text-center hover:bg-gray-100 transition-all transform hover:scale-105">Join Your Sisters Today</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- About -->
-    <section id="about" class="py-20 px-4 bg-white">
+    <section id="about" class="py-20 px-4 bg-gray-50">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-16">
                 <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">The Story Behind #STAYM</h2>
-                <p class="text-xl text-gray-600">Founded by Monica Dube-Sekhwela in 2014</p>
+                <p class="text-xl text-gray-600 mb-2">Founded by Monica Dube-Sekhwela in 2014</p>
+                <p class="text-lg text-gray-500 italic">"Empower a Young Mother, Empower the Next Generation"</p>
             </div>
+            
             <div class="grid md:grid-cols-2 gap-12 mb-16">
-                <div class="bg-gradient-to-br from-pink-50 to-white p-8 rounded-2xl shadow-lg">
-                    <h3 class="text-2xl font-bold text-gray-900 mb-4">My Journey</h3>
-                    <p class="text-gray-700 mb-4">Strength of a Young Mother started on Facebook in 2014 as a page to give young mothers a voice. As a single mother to a beautiful baby girl, I realized nothing would ever be the same again.</p>
-                    <p class="text-gray-700 mb-4">Even with support, the transformation was very painful, scary, and overwhelming. There are many other mothers in worse conditions and I want to help them.</p>
-                </div>
-                <div class="bg-gradient-to-br from-rose-50 to-white p-8 rounded-2xl shadow-lg">
+                <div class="bg-white p-8 rounded-2xl shadow-lg">
+                    <div class="img-placeholder h-64 rounded-xl mb-6 overflow-hidden">
+                        <img src="6.png" alt="African mothers community support" class="w-full h-full object-cover" onerror="this.style.display='none'">
+                    </div>
                     <h3 class="text-2xl font-bold text-gray-900 mb-4">The Challenge</h3>
                     <p class="text-gray-700 mb-4">With unemployment, abuse and crime on the rise, single mothers are overwhelmed, overburdened, unemployed, and lack support.</p>
-                    <p class="text-pink-600 font-semibold">Motherhood is like a transformation that can go either way - we want it to take us HIGHER.</p>
+                    <p class="text-pink-600 font-semibold text-lg">Motherhood is like a transformation that can go either way—we want it to take us HIGHER.</p>
+                </div>
+                <div class="bg-white p-8 rounded-2xl shadow-lg">
+                    <div class="img-placeholder h-64 rounded-xl mb-6 overflow-hidden">
+                        <img src="7.png" alt="Empowered African mothers" class="w-full h-full object-cover" onerror="this.style.display='none'">
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4">Our Solution</h3>
+                    <p class="text-gray-700 mb-4">We provide holistic support—from emotional wellness to business training, from legal assistance to spiritual guidance. We walk with mothers every step of their journey.</p>
+                    <p class="text-pink-600 font-semibold text-lg">Because when one mother rises, she lifts her entire community with her.</p>
                 </div>
             </div>
+
             <div class="grid md:grid-cols-3 gap-8">
-                <div class="bg-gradient-to-br from-pink-50 to-white p-8 rounded-2xl shadow-lg">
+                <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow">
+                    <div class="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                    </div>
                     <h3 class="text-2xl font-bold text-gray-900 mb-4">Mission</h3>
                     <p class="text-gray-700">To actively work on encouraging and enabling young mothers to take active roles in their own personal transformation and the lives of their children.</p>
                 </div>
-                <div class="bg-gradient-to-br from-rose-50 to-white p-8 rounded-2xl shadow-lg">
+                <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow">
+                    <div class="w-16 h-16 bg-rose-100 rounded-full flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                        </svg>
+                    </div>
                     <h3 class="text-2xl font-bold text-gray-900 mb-4">Vision</h3>
                     <p class="text-gray-700">To see young mothers reach their goals, heal from traumatic experiences, and lead by example while creating sustainable wealth.</p>
                 </div>
-                <div class="bg-gradient-to-br from-pink-50 to-white p-8 rounded-2xl shadow-lg">
+                <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow">
+                    <div class="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                        </svg>
+                    </div>
                     <h3 class="text-2xl font-bold text-gray-900 mb-4">Values</h3>
                     <p class="text-gray-700">Accountability, Divine Femininity, Support, Self-Love, Self-Worth, Devotion, Passion, Independence, Hope, and Peace.</p>
                 </div>
@@ -115,58 +383,327 @@
         </div>
     </section>
 
+    <!-- Impact Stats - Interactive -->
+    <section class="py-16 px-4 bg-gradient-to-r from-pink-600 to-rose-600 text-white">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold mb-2">Our 2026 Impact Goals</h2>
+                <p class="text-pink-100">Join us in creating lasting change</p>
+            </div>
+            <div class="grid md:grid-cols-4 gap-8 text-center">
+                <div class="interactive-stat">
+                    <div class="text-5xl font-bold mb-2" data-count="150">0</div>
+                    <p class="text-xl text-pink-100">Mothers to Empower</p>
+                </div>
+                <div class="interactive-stat">
+                    <div class="text-5xl font-bold mb-2" data-count="300">0</div>
+                    <p class="text-xl text-pink-100">Children to Benefit</p>
+                </div>
+                <div class="interactive-stat">
+                    <div class="text-5xl font-bold mb-2" data-count="50">0</div>
+                    <p class="text-xl text-pink-100">Businesses to Launch</p>
+                </div>
+                <div class="interactive-stat">
+                    <div class="text-5xl font-bold mb-2" data-count="11">0</div>
+                    <p class="text-xl text-pink-100">Years of Impact</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Pillars -->
-    <section id="pillars" class="py-20 px-4 bg-gray-50">
+    <section id="pillars" class="py-20 px-4 bg-white">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-16">
                 <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Our Support Pillars</h2>
                 <p class="text-xl text-gray-600">Holistic support across all areas of life</p>
             </div>
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div class="bg-white p-8 rounded-2xl shadow-lg"><h3 class="text-2xl font-bold text-gray-900 mb-4">Emotional & Mental Wellness</h3><p class="text-gray-700">Psychosocial support, counseling, group therapy, and mental health resources.</p></div>
-                <div class="bg-white p-8 rounded-2xl shadow-lg"><h3 class="text-2xl font-bold text-gray-900 mb-4">Education & Personal Development</h3><p class="text-gray-700">Workshops, training programs, and leadership development.</p></div>
-                <div class="bg-white p-8 rounded-2xl shadow-lg"><h3 class="text-2xl font-bold text-gray-900 mb-4">Physical Health & Self-Care</h3><p class="text-gray-700">Fitness programs, wellness workshops, and health resources.</p></div>
-                <div class="bg-white p-8 rounded-2xl shadow-lg"><h3 class="text-2xl font-bold text-gray-900 mb-4">Spiritual Support</h3><p class="text-gray-700">Spiritual counseling, meditation, and faith-based support networks.</p></div>
-                <div class="bg-white p-8 rounded-2xl shadow-lg"><h3 class="text-2xl font-bold text-gray-900 mb-4">Legal Assistance</h3><p class="text-gray-700">Legal consultation, co-parenting mediation, and rights information.</p></div>
-                <div class="bg-white p-8 rounded-2xl shadow-lg"><h3 class="text-2xl font-bold text-gray-900 mb-4">Community & Networking</h3><p class="text-gray-700">Monthly meetups, online forums, and peer support programs.</p></div>
+                <div class="bg-gradient-to-br from-pink-50 to-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all">
+                    <div class="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4">Emotional & Mental Wellness</h3>
+                    <p class="text-gray-700">Psychosocial support, counseling, group therapy, and mental health resources.</p>
+                </div>
+                <div class="bg-gradient-to-br from-rose-50 to-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all">
+                    <div class="w-16 h-16 bg-rose-100 rounded-full flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4">Education & Personal Development</h3>
+                    <p class="text-gray-700">Workshops, training programs, and leadership development.</p>
+                </div>
+                <div class="bg-gradient-to-br from-pink-50 to-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all">
+                    <div class="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4">Physical Health & Self-Care</h3>
+                    <p class="text-gray-700">Fitness programs, wellness workshops, and health resources.</p>
+                </div>
+                <div class="bg-gradient-to-br from-rose-50 to-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all">
+                    <div class="w-16 h-16 bg-rose-100 rounded-full flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4">Spiritual Support</h3>
+                    <p class="text-gray-700">Spiritual counseling, meditation, and faith-based support networks.</p>
+                </div>
+                <div class="bg-gradient-to-br from-pink-50 to-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all">
+                    <div class="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4">Legal Assistance</h3>
+                    <p class="text-gray-700">Legal consultation, co-parenting mediation, and rights information.</p>
+                </div>
+                <div class="bg-gradient-to-br from-rose-50 to-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all">
+                    <div class="w-16 h-16 bg-rose-100 rounded-full flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4">Community & Networking</h3>
+                    <p class="text-gray-700">Monthly meetups, online forums, and peer support programs.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Community Gallery -->
+    <section class="py-20 px-4 bg-gradient-to-br from-pink-50 to-rose-50">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Our Community in Action</h2>
+                <p class="text-xl text-gray-600">Witness the transformation, strength, and sisterhood</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="relative overflow-hidden rounded-2xl shadow-xl group h-80">
+                    <img src="7.png" alt="African mother entrepreneur" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500" onerror="this.style.display='none'">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-6">
+                        <div class="text-white">
+                            <h3 class="font-bold text-lg mb-1">Business Success</h3>
+                            <p class="text-sm text-gray-200">Mothers building sustainable businesses</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="relative overflow-hidden rounded-2xl shadow-xl group h-80">
+                    <img src="8.png" alt="African mother with baby" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500" onerror="this.style.display='none'">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-6">
+                        <div class="text-white">
+                            <h3 class="font-bold text-lg mb-1">Motherhood Journey</h3>
+                            <p class="text-sm text-gray-200">Supporting each stage with love</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="relative overflow-hidden rounded-2xl shadow-xl group h-80">
+                    <img src="9.png" alt="African women community" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500" onerror="this.style.display='none'">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-6">
+                        <div class="text-white">
+                            <h3 class="font-bold text-lg mb-1">Community Support</h3>
+                            <p class="text-sm text-gray-200">Sisters lifting each other higher</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="relative overflow-hidden rounded-2xl shadow-xl group h-80">
+                    <img src="10.png" alt="African mother smiling" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500" onerror="this.style.display='none'">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-6">
+                        <div class="text-white">
+                            <h3 class="font-bold text-lg mb-1">Wellness & Growth</h3>
+                            <p class="text-sm text-gray-200">Thriving mentally and physically</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="relative overflow-hidden rounded-2xl shadow-xl group h-80">
+                    <img src="11.png" alt="African businesswoman" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500" onerror="this.style.display='none'">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-6">
+                        <div class="text-white">
+                            <h3 class="font-bold text-lg mb-1">Leadership</h3>
+                            <p class="text-sm text-gray-200">Empowering the next generation</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="relative overflow-hidden rounded-2xl shadow-xl group h-80">
+                    <img src="12.png" alt="African mothers together" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500" onerror="this.style.display='none'">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-6">
+                        <div class="text-white">
+                            <h3 class="font-bold text-lg mb-1">Sisterhood</h3>
+                            <p class="text-sm text-gray-200">United in strength and purpose</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
     <!-- Business -->
-    <section id="business" class="py-20 px-4 bg-white">
+    <section id="business" class="py-20 px-4 bg-gray-50">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-16">
                 <div class="inline-block bg-pink-100 rounded-full px-6 py-2 mb-4"><span class="text-pink-700 font-semibold">Business & Entrepreneurship</span></div>
                 <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Empowering Mompreneurs</h2>
                 <p class="text-xl text-gray-600">Full-scale end-to-end support leveraging a cooperative model</p>
             </div>
-            <div class="grid md:grid-cols-3 gap-8 mb-12">
-                <div class="bg-pink-50 p-6 rounded-xl shadow-lg"><h3 class="text-xl font-bold text-gray-900 mb-3">Business Management Training</h3><p class="text-gray-600">Comprehensive training covering business fundamentals and strategic planning.</p></div>
-                <div class="bg-pink-50 p-6 rounded-xl shadow-lg"><h3 class="text-xl font-bold text-gray-900 mb-3">Continuous Business Advisory</h3><p class="text-gray-600">Ongoing mentorship from experienced consultants and coaches.</p></div>
-                <div class="bg-pink-50 p-6 rounded-xl shadow-lg"><h3 class="text-xl font-bold text-gray-900 mb-3">Product Branding & Marketing</h3><p class="text-gray-600">Professional branding and marketing strategies.</p></div>
-                <div class="bg-pink-50 p-6 rounded-xl shadow-lg"><h3 class="text-xl font-bold text-gray-900 mb-3">Micro Loans</h3><p class="text-gray-600">Affordable micro-financing with very low interest (12+ months members).</p></div>
-                <div class="bg-pink-50 p-6 rounded-xl shadow-lg"><h3 class="text-xl font-bold text-gray-900 mb-3">Psychosocial Support</h3><p class="text-gray-600">Mental wellness throughout your entrepreneurial journey.</p></div>
-                <div class="bg-pink-50 p-6 rounded-xl shadow-lg"><h3 class="text-xl font-bold text-gray-900 mb-3">Mompreneur Club</h3><p class="text-gray-600">Exclusive networking and collaboration opportunities.</p></div>
+
+            <!-- Business Image -->
+            <div class="mb-12">
+                <div class="img-placeholder rounded-2xl h-96 overflow-hidden">
+                    <img src="11.png" alt="African women business training" class="w-full h-full object-cover" onerror="this.style.display='none'">
+                </div>
             </div>
+
+            <div class="grid md:grid-cols-3 gap-8 mb-12">
+                <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all">
+                    <div class="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Business Management Training</h3>
+                    <p class="text-gray-600">Comprehensive training covering business fundamentals and strategic planning.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all">
+                    <div class="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Continuous Business Advisory</h3>
+                    <p class="text-gray-600">Ongoing mentorship from experienced consultants and coaches.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all">
+                    <div class="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Product Branding & Marketing</h3>
+                    <p class="text-gray-600">Professional branding and marketing strategies.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all">
+                    <div class="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Micro Loans</h3>
+                    <p class="text-gray-600">Affordable micro-financing with very low interest (12+ months members).</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all">
+                    <div class="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Psychosocial Support</h3>
+                    <p class="text-gray-600">Mental wellness throughout your entrepreneurial journey.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all">
+                    <div class="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Mompreneur Club</h3>
+                    <p class="text-gray-600">Exclusive networking and collaboration opportunities.</p>
+                </div>
+            </div>
+            
             <div class="bg-gradient-to-br from-pink-50 to-white rounded-2xl p-8 shadow-xl">
-                <h3 class="text-3xl font-bold text-gray-900 mb-6 text-center">Impact Goals - First Year</h3>
+                <h3 class="text-3xl font-bold text-gray-900 mb-6 text-center">2026 Impact Goals</h3>
                 <div class="grid md:grid-cols-2 gap-8 text-center">
-                    <div><div class="text-5xl font-bold text-pink-600 mb-2">150</div><p class="text-gray-700 font-semibold">Mompreneurs Supported</p></div>
-                    <div><div class="text-5xl font-bold text-rose-600 mb-2">300+</div><p class="text-gray-700 font-semibold">Children to Benefit</p></div>
+                    <div class="p-6">
+                        <div class="text-6xl font-bold text-pink-600 mb-2">150+</div>
+                        <p class="text-gray-700 font-semibold text-lg">Mompreneurs to Support</p>
+                    </div>
+                    <div class="p-6">
+                        <div class="text-6xl font-bold text-rose-600 mb-2">300+</div>
+                        <p class="text-gray-700 font-semibold text-lg">Children to Benefit</p>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- 2026 Vision Section -->
+    <section class="py-20 px-4 bg-gradient-to-br from-pink-600 to-rose-600 text-white">
+        <div class="max-w-5xl mx-auto text-center">
+            <div class="mb-12">
+                <div class="inline-block bg-white bg-opacity-20 rounded-full px-6 py-2 mb-6">
+                    <span class="font-bold">2026 Vision</span>
+                </div>
+                <h2 class="text-4xl md:text-5xl font-bold mb-6">Together, We're Building a Movement</h2>
+                <p class="text-xl text-pink-100 mb-8 leading-relaxed">Since our founding in 2014, we've witnessed the incredible transformation that happens when young mothers receive holistic support. Now, we're scaling our impact to reach even more women across Botswana.</p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8 mb-12">
+                <div class="bg-white bg-opacity-10 backdrop-blur-sm rounded-2xl p-8">
+                    <div class="text-5xl font-bold mb-3">150+</div>
+                    <p class="text-lg mb-3 font-semibold">Young Mothers</p>
+                    <p class="text-pink-100 text-sm">Receiving comprehensive support in business, wellness, education, and community</p>
+                </div>
+                <div class="bg-white bg-opacity-10 backdrop-blur-sm rounded-2xl p-8">
+                    <div class="text-5xl font-bold mb-3">300+</div>
+                    <p class="text-lg mb-3 font-semibold">Children Impacted</p>
+                    <p class="text-pink-100 text-sm">Growing up with empowered role models, breaking cycles of poverty</p>
+                </div>
+                <div class="bg-white bg-opacity-10 backdrop-blur-sm rounded-2xl p-8">
+                    <div class="text-5xl font-bold mb-3">50+</div>
+                    <p class="text-lg mb-3 font-semibold">New Businesses</p>
+                    <p class="text-pink-100 text-sm">Created by mompreneurs, generating sustainable income and employment</p>
+                </div>
+            </div>
+
+            <div class="bg-white bg-opacity-10 backdrop-blur-sm rounded-2xl p-8 mb-8">
+                <p class="text-2xl font-bold mb-4">Your Support Makes This Possible</p>
+                <p class="text-lg text-pink-100">Every membership, every partnership, every connection brings us closer to transforming 150+ lives in 2026. When you join STAYM, you're not just investing in yourself—you're investing in the future of an entire generation.</p>
+            </div>
+
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSd66S66RpYtTO4W8-61avVgMa7dwm2Wsj3ERXO_VbfLd8FYgw/viewform?usp=header" target="_blank" class="inline-block bg-white text-pink-600 px-10 py-4 rounded-full font-bold text-lg hover:bg-gray-100 transition-all transform hover:scale-105">Be Part of the 2026 Vision</a>
+        </div>
+    </section>
+
     <!-- Membership -->
-    <section id="membership" class="py-20 px-4 bg-gray-50">
+    <section id="membership" class="py-20 px-4 bg-white">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-16">
-                <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Membership Options</h2>
+                <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Join Our Community</h2>
                 <p class="text-xl text-gray-600">Flexible packages designed to fit your journey</p>
             </div>
-            <div class="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+            <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto mb-12">
+                <div class="bg-gradient-to-br from-gray-50 to-white p-8 rounded-2xl shadow-xl border-2 border-gray-200">
+                    <div class="text-center mb-6">
+                        <h3 class="text-2xl font-bold text-gray-900 mb-2">Newsletter</h3>
+                        <div class="text-5xl font-bold text-gray-600 mb-2">FREE</div>
+                        <p class="text-gray-600">Stay connected</p>
+                    </div>
+                    <ul class="space-y-3 mb-8 text-gray-700">
+                        <li class="flex items-start gap-2">
+                            <svg class="w-5 h-5 text-green-500 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                            <span>Monthly Newsletter</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <svg class="w-5 h-5 text-green-500 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                            <span>Community Updates</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <svg class="w-5 h-5 text-green-500 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                            <span>Event Notifications</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <svg class="w-5 h-5 text-green-500 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                            <span>Resources & Tips</span>
+                        </li>
+                    </ul>
+                    <a href="https://docs.google.com/forms/d/e/1FAIpQLSd66S66RpYtTO4W8-61avVgMa7dwm2Wsj3ERXO_VbfLd8FYgw/viewform?usp=header" target="_blank" class="block w-full bg-gray-600 text-white py-4 rounded-xl font-semibold hover:bg-gray-700 text-center transition-all">Subscribe Free</a>
+                </div>
                 <div class="bg-white p-8 rounded-2xl shadow-xl border-2 border-pink-100">
                     <div class="text-center mb-6">
                         <h3 class="text-2xl font-bold text-gray-900 mb-2">Monthly</h3>
@@ -174,16 +711,34 @@
                         <p class="text-gray-600">per month</p>
                     </div>
                     <ul class="space-y-3 mb-8 text-gray-700">
-                        <li>✓ Coaching, Training & Consulting</li>
-                        <li>✓ Strategic Product Marketing</li>
-                        <li>✓ Membership Meetings & Events</li>
-                        <li>✓ Networking Opportunities</li>
-                        <li>✓ Psychosocial Support</li>
-                        <li>✓ Growth Resources</li>
+                        <li class="flex items-start gap-2">
+                            <svg class="w-5 h-5 text-pink-500 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                            <span>Coaching, Training & Consulting</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <svg class="w-5 h-5 text-pink-500 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                            <span>Strategic Product Marketing</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <svg class="w-5 h-5 text-pink-500 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                            <span>Membership Meetings & Events</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <svg class="w-5 h-5 text-pink-500 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                            <span>Networking Opportunities</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <svg class="w-5 h-5 text-pink-500 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                            <span>Psychosocial Support</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <svg class="w-5 h-5 text-pink-500 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                            <span>Growth Resources</span>
+                        </li>
                     </ul>
-                    <button onclick="openMembershipForm()" class="w-full bg-pink-600 text-white py-4 rounded-xl font-semibold hover:bg-pink-700">Choose Monthly</button>
+                    <a href="https://docs.google.com/forms/d/e/1FAIpQLSd66S66RpYtTO4W8-61avVgMa7dwm2Wsj3ERXO_VbfLd8FYgw/viewform?usp=header" target="_blank" class="block w-full bg-pink-600 text-white py-4 rounded-xl font-semibold hover:bg-pink-700 text-center transition-all">Choose Monthly</a>
                 </div>
-                <div class="bg-white p-8 rounded-2xl shadow-xl border-4 border-rose-400 relative">
+                <div class="bg-white p-8 rounded-2xl shadow-xl border-4 border-rose-400 relative transform md:scale-105">
                     <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-pink-500 to-rose-500 text-white px-6 py-2 rounded-full text-sm font-bold">BEST VALUE</div>
                     <div class="text-center mb-6">
                         <h3 class="text-2xl font-bold text-gray-900 mb-2">Annual</h3>
@@ -192,29 +747,146 @@
                         <p class="text-sm text-green-600 font-semibold mt-2">Save $130 annually!</p>
                     </div>
                     <ul class="space-y-3 mb-8 text-gray-700">
-                        <li>✓ All Monthly Features</li>
-                        <li>✓ Priority Micro Loan Access</li>
-                        <li>✓ Exclusive Annual Events</li>
-                        <li>✓ Premium Growth Resources</li>
-                        <li>✓ 1-on-1 Mentorship Sessions</li>
+                        <li class="flex items-start gap-2">
+                            <svg class="w-5 h-5 text-rose-500 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                            <span>All Monthly Features</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <svg class="w-5 h-5 text-rose-500 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                            <span>Priority Micro Loan Access</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <svg class="w-5 h-5 text-rose-500 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                            <span>Exclusive Annual Events</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <svg class="w-5 h-5 text-rose-500 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                            <span>Premium Growth Resources</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <svg class="w-5 h-5 text-rose-500 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                            <span>1-on-1 Mentorship Sessions</span>
+                        </li>
                     </ul>
-                    <button onclick="openMembershipForm()" class="w-full bg-gradient-to-r from-pink-500 to-rose-500 text-white py-4 rounded-xl font-semibold hover:shadow-lg">Choose Annual</button>
+                    <a href="https://docs.google.com/forms/d/e/1FAIpQLSd66S66RpYtTO4W8-61avVgMa7dwm2Wsj3ERXO_VbfLd8FYgw/viewform?usp=header" target="_blank" class="block w-full bg-gradient-to-r from-pink-500 to-rose-500 text-white py-4 rounded-xl font-semibold hover:shadow-lg text-center transition-all">Choose Annual</a>
                 </div>
+            </div>
+
+            <!-- CTA Section -->
+            <div class="bg-gradient-to-r from-pink-600 to-rose-600 rounded-2xl p-12 text-white text-center">
+                <h3 class="text-3xl font-bold mb-4">Ready to Transform Your Life?</h3>
+                <p class="text-xl mb-8 text-pink-100">Be part of our 2026 goal: empowering 150+ mothers to create legacies for their children</p>
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLSd66S66RpYtTO4W8-61avVgMa7dwm2Wsj3ERXO_VbfLd8FYgw/viewform?usp=header" target="_blank" class="inline-block bg-white text-pink-600 px-10 py-4 rounded-full font-bold text-lg hover:bg-gray-100 transition-all transform hover:scale-105">Start Your Journey Today</a>
             </div>
         </div>
     </section>
 
     <!-- Resources -->
-    <section class="py-16 px-4 bg-white">
+    <section class="py-16 px-4 bg-gray-50">
         <div class="max-w-7xl mx-auto text-center">
             <h3 class="text-3xl font-bold text-gray-900 mb-8">Financial Resources</h3>
-            <a href="https://money-mamas.vercel.app/index.html" target="_blank" class="inline-flex items-center gap-3 bg-pink-50 px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all">
+            <a href="https://money-mamas.vercel.app/index.html" target="_blank" class="inline-flex items-center gap-3 bg-white px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:scale-105">
                 <svg class="w-6 h-6 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
                 <div class="text-left">
                     <div class="font-bold text-gray-900">Money Mamas</div>
                     <div class="text-sm text-gray-600">Financial Education & Resources</div>
                 </div>
             </a>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="py-20 px-4 bg-white">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
+                <p class="text-xl text-gray-600">Everything you need to know about joining STAYM</p>
+            </div>
+            <div class="space-y-6">
+                <div class="bg-gradient-to-br from-pink-50 to-white p-6 rounded-xl shadow-lg">
+                    <button class="faq-question w-full text-left flex justify-between items-center" onclick="toggleFAQ(this)">
+                        <h3 class="text-xl font-bold text-gray-900">Who can join STAYM?</h3>
+                        <svg class="w-6 h-6 text-pink-600 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="faq-answer hidden mt-4 text-gray-700">
+                        <p>STAYM is open to all young mothers in Botswana who are looking for support, community, and empowerment. Whether you're a single mother, a student mother, or simply a young mother facing challenges, you belong here. We welcome mothers of all backgrounds, ages, and circumstances.</p>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-pink-50 to-white p-6 rounded-xl shadow-lg">
+                    <button class="faq-question w-full text-left flex justify-between items-center" onclick="toggleFAQ(this)">
+                        <h3 class="text-xl font-bold text-gray-900">What support will I receive as a member?</h3>
+                        <svg class="w-6 h-6 text-pink-600 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="faq-answer hidden mt-4 text-gray-700">
+                        <p>As a member, you'll receive holistic support including: psychosocial counseling, business training and mentorship, legal assistance, health and wellness programs, networking opportunities, access to micro-loans (for 12+ month members), and most importantly, a supportive community of women who understand your journey.</p>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-pink-50 to-white p-6 rounded-xl shadow-lg">
+                    <button class="faq-question w-full text-left flex justify-between items-center" onclick="toggleFAQ(this)">
+                        <h3 class="text-xl font-bold text-gray-900">Do I need a business idea to join?</h3>
+                        <svg class="w-6 h-6 text-pink-600 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="faq-answer hidden mt-4 text-gray-700">
+                        <p>No! You don't need to have a business idea or be an entrepreneur to join. STAYM supports mothers in all aspects of life - whether you're looking for emotional support, education, health resources, or yes, business opportunities. We'll help you discover your path and walk it with you.</p>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-pink-50 to-white p-6 rounded-xl shadow-lg">
+                    <button class="faq-question w-full text-left flex justify-between items-center" onclick="toggleFAQ(this)">
+                        <h3 class="text-xl font-bold text-gray-900">How do the micro-loans work?</h3>
+                        <svg class="w-6 h-6 text-pink-600 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="faq-answer hidden mt-4 text-gray-700">
+                        <p>Micro-loans are available to members who have been active for 12+ months. These are small business loans with very low interest rates designed to help you start or grow your business. The application process is supportive and designed to set you up for success, not just give you money.</p>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-pink-50 to-white p-6 rounded-xl shadow-lg">
+                    <button class="faq-question w-full text-left flex justify-between items-center" onclick="toggleFAQ(this)">
+                        <h3 class="text-xl font-bold text-gray-900">Where are you located?</h3>
+                        <svg class="w-6 h-6 text-pink-600 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="faq-answer hidden mt-4 text-gray-700">
+                        <p>We are based in Gaborone, Botswana, but our community extends throughout the country. We hold regular meetups in Gaborone and host online events and forums so members from all regions can participate. Distance should never be a barrier to support.</p>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-pink-50 to-white p-6 rounded-xl shadow-lg">
+                    <button class="faq-question w-full text-left flex justify-between items-center" onclick="toggleFAQ(this)">
+                        <h3 class="text-xl font-bold text-gray-900">Is my information kept confidential?</h3>
+                        <svg class="w-6 h-6 text-pink-600 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="faq-answer hidden mt-4 text-gray-700">
+                        <p>Absolutely. We understand the sensitive nature of many situations our members face. All personal information, counseling sessions, and support group discussions are kept strictly confidential. Your privacy and safety are our top priorities.</p>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-pink-50 to-white p-6 rounded-xl shadow-lg">
+                    <button class="faq-question w-full text-left flex justify-between items-center" onclick="toggleFAQ(this)">
+                        <h3 class="text-xl font-bold text-gray-900">Can I cancel my membership?</h3>
+                        <svg class="w-6 h-6 text-pink-600 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="faq-answer hidden mt-4 text-gray-700">
+                        <p>Yes, you can cancel your membership at any time. However, we hope you'll give us a chance to address any concerns first. Our door is always open if you need to take a break and return later - once part of the STAYM family, always part of the family.</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -226,38 +898,68 @@
                 <p class="text-xl text-pink-100">We'd love to hear from you</p>
             </div>
             <div class="grid md:grid-cols-3 gap-8 mb-12 text-center">
-                <div>
+                <div class="bg-white bg-opacity-10 p-6 rounded-xl backdrop-blur-sm">
+                    <div class="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                        </svg>
+                    </div>
                     <h3 class="font-bold text-xl mb-2">Call Us</h3>
                     <a href="tel:+26774310425" class="text-pink-100 hover:text-white">+267 74310425</a>
                 </div>
-                <div>
+                <div class="bg-white bg-opacity-10 p-6 rounded-xl backdrop-blur-sm">
+                    <div class="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
                     <h3 class="font-bold text-xl mb-2">Email Us</h3>
-                    <a href="mailto:strengthofayoungmotherbw@gmail.com" class="text-pink-100 hover:text-white break-all">strengthofayoungmotherbw@gmail.com</a>
+                    <a href="/cdn-cgi/l/email-protection#ff8c8b8d9a91988b9790999e86908a919892908b979a8d9d88bf98929e9693d19c9092" class="text-pink-100 hover:text-white break-all"><span class="__cf_email__" data-cfemail="44373036212a23302c2b22253d2b312a23292b302c21362633042329252d286a272b29">[email&#160;protected]</span></a>
                 </div>
-                <div>
+                <div class="bg-white bg-opacity-10 p-6 rounded-xl backdrop-blur-sm">
+                    <div class="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                    </div>
                     <h3 class="font-bold text-xl mb-2">Location</h3>
                     <p class="text-pink-100">Gaborone, Botswana<br>P.O. Box 10191</p>
                 </div>
             </div>
             <div class="flex justify-center gap-6 mb-12">
-                <a href="https://www.facebook.com/Strength-of-a-Young-Mother" target="_blank" class="w-14 h-14 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-opacity-30">
+                <a href="https://www.facebook.com/Strength-of-a-Young-Mother" target="_blank" class="w-14 h-14 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-opacity-30 transition-all transform hover:scale-110">
                     <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
                 </a>
-                <a href="https://www.instagram.com/Strengthofayoungmotherbw_" target="_blank" class="w-14 h-14 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-opacity-30">
+                <a href="https://www.instagram.com/Strengthofayoungmotherbw_" target="_blank" class="w-14 h-14 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-opacity-30 transition-all transform hover:scale-110">
                     <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
                 </a>
-                <a href="https://www.linkedin.com/company/strength-of-a-young-mother" target="_blank" class="w-14 h-14 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-opacity-30">
+                <a href="https://www.linkedin.com/company/strength-of-a-young-mother" target="_blank" class="w-14 h-14 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-opacity-30 transition-all transform hover:scale-110">
                     <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
                 </a>
             </div>
             <div class="text-center">
-                <button onclick="openMembershipForm()" class="bg-white text-pink-900 px-10 py-4 rounded-full font-bold text-lg hover:bg-gray-100">Join Our Community Today</button>
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLSd66S66RpYtTO4W8-61avVgMa7dwm2Wsj3ERXO_VbfLd8FYgw/viewform?usp=header" target="_blank" class="inline-block bg-white text-pink-900 px-10 py-4 rounded-full font-bold text-lg hover:bg-gray-100 transition-all transform hover:scale-105">Join Our Community Today</a>
             </div>
         </div>
     </section>
 
+    <!-- WhatsApp Float Button -->
+    <a href="https://wa.me/26774310425?text=Hi%20STAYM,%20I%27m%20interested%20in%20learning%20more%20about%20your%20programs" target="_blank" class="fixed bottom-8 left-8 bg-green-500 text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center hover:bg-green-600 transition-all hover:shadow-xl transform hover:scale-110 z-40">
+        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+        </svg>
+    </a>
+
+    <!-- Back to Top Button -->
+    <button id="backToTop" class="fixed bottom-8 right-8 bg-gradient-to-r from-pink-500 to-rose-500 text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center opacity-0 invisible transition-all hover:shadow-xl transform hover:scale-110 z-40">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+        </svg>
+    </button>
+
     <!-- Footer -->
-     <footer class="bg-gray-900 text-gray-300 py-12 px-4">
+    <footer class="bg-gray-900 text-gray-300 py-12 px-4">
         <div class="max-w-7xl mx-auto">
             <div class="grid md:grid-cols-4 gap-8 mb-8">
                 <div>
@@ -275,7 +977,8 @@
                     <h4 class="text-white font-bold mb-4">Quick Links</h4>
                     <ul class="space-y-2 text-sm">
                         <li><a href="#home" class="hover:text-pink-400 transition">Home</a></li>
-                        <li><a href="#mission" class="hover:text-pink-400 transition">Mission & Vision</a></li>
+                        <li><a href="#stories" class="hover:text-pink-400 transition">Stories</a></li>
+                        <li><a href="#about" class="hover:text-pink-400 transition">About</a></li>
                         <li><a href="#pillars" class="hover:text-pink-400 transition">Our Pillars</a></li>
                         <li><a href="#business" class="hover:text-pink-400 transition">Business Programs</a></li>
                         <li><a href="#membership" class="hover:text-pink-400 transition">Membership</a></li>
@@ -284,17 +987,17 @@
                 <div>
                     <h4 class="text-white font-bold mb-4">Get Involved</h4>
                     <ul class="space-y-2 text-sm">
-                        <li><button onclick="openMembershipForm()" class="hover:text-pink-400 transition text-left">Become a Member</button></li>
-                        <li><a href="mailto:strengthofayoungmotherbw@gmail.com?subject=Partnership" class="hover:text-pink-400 transition">Partner With Us</a></li>
-                        <li><a href="mailto:strengthofayoungmotherbw@gmail.com?subject=Donation" class="hover:text-pink-400 transition">Make a Donation</a></li>
-                        <li><a href="https://www.moneymamas.co.bw" target="_blank" rel="noopener noreferrer" class="hover:text-pink-400 transition">Money Mamas</a></li>
+                        <li><a href="https://docs.google.com/forms/d/e/1FAIpQLSd66S66RpYtTO4W8-61avVgMa7dwm2Wsj3ERXO_VbfLd8FYgw/viewform?usp=header" target="_blank" class="hover:text-pink-400 transition">Become a Member</a></li>
+                        <li><a href="/cdn-cgi/l/email-protection#d2a1a6a0b7bcb5a6babdb4b3abbda7bcb5bfbda6bab7a0b0a592b5bfb3bbbefcb1bdbfeda1a7b0b8b7b1a6ef82b3a0a6bcb7a0a1babba2" class="hover:text-pink-400 transition">Partner With Us</a></li>
+                        <li><a href="/cdn-cgi/l/email-protection#780b0c0a1d161f0c10171e1901170d161f15170c101d0a1a0f381f15191114561b1715470b0d1a121d1b0c453c1716190c111716" class="hover:text-pink-400 transition">Make a Donation</a></li>
+                        <li><a href="https://money-mamas.vercel.app/index.html" target="_blank" class="hover:text-pink-400 transition">Money Mamas</a></li>
                     </ul>
                 </div>
                 <div>
                     <h4 class="text-white font-bold mb-4">Contact Info</h4>
                     <ul class="space-y-2 text-sm">
                         <li><a href="tel:+26774310425" class="hover:text-pink-400 transition">+267 74310425</a></li>
-                        <li><a href="mailto:strengthofayoungmotherbw@gmail.com" class="hover:text-pink-400 transition break-all">strengthofayoungmotherbw@gmail.com</a></li>
+                        <li><a href="/cdn-cgi/l/email-protection#0d7e797f68636a7965626b6c746278636a60627965687f6f7a4d6a606c6461236e6260" class="hover:text-pink-400 transition break-all"><span class="__cf_email__" data-cfemail="b7c4c3c5d2d9d0c3dfd8d1d6ced8c2d9d0dad8c3dfd2c5d5c0f7d0dad6dedb99d4d8da">[email&#160;protected]</span></a></li>
                         <li><span>Gaborone, Botswana</span></li>
                     </ul>
                 </div>
@@ -306,54 +1009,137 @@
         </div>
     </footer>
 
-    <!-- Membership Modal -->
-    <div id="membershipModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-2xl w-full shadow-2xl">
-            <div class="p-6 border-b flex justify-between items-center">
-                <h3 class="text-2xl font-bold text-pink-900">Membership Application</h3>
-                <button onclick="closeMembershipForm()" class="text-gray-500 hover:text-gray-700">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                </button>
-            </div>
-            <form id="membershipForm" class="p-6 space-y-4">
-                <input type="text" name="fullName" required placeholder="Full Name *" class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-pink-500">
-                <div class="grid md:grid-cols-2 gap-4">
-                    <input type="email" name="email" required placeholder="Email *" class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-pink-500">
-                    <input type="tel" name="phone" required placeholder="Phone *" class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-pink-500">
-                </div>
-                <select name="membershipType" required class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-pink-500">
-                    <option value="monthly">Monthly -newsletter(free)</option>
-                    <option value="monthly">Monthly - $10/month</option>
-                    <option value="annual">Annual - $250/year</option>
-                </select>
-                <div class="flex gap-4">
-                    <button type="submit" class="flex-1 bg-pink-600 text-white py-3 rounded-lg font-semibold hover:bg-pink-700">Submit</button>
-                    <button type="button" onclick="closeMembershipForm()" class="px-6 py-3 border-2 rounded-lg">Cancel</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <script>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+        // Year
         document.getElementById('year').textContent = new Date().getFullYear();
+
+        // Mobile Menu
         const mobileMenuBtn = document.getElementById('mobile-menu-btn');
         const mobileMenu = document.getElementById('mobile-menu');
-        mobileMenuBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
-        mobileMenu.querySelectorAll('a').forEach(link => link.addEventListener('click', () => mobileMenu.classList.add('hidden')));
-        function openMembershipForm() {
-            document.getElementById('membershipModal').classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
-        }
-        function closeMembershipForm() {
-            document.getElementById('membershipModal').classList.add('hidden');
-            document.body.style.overflow = 'auto';
-        }
-        document.getElementById('membershipForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            alert('Thank you! We will contact you shortly.');
-            closeMembershipForm();
-            e.target.reset();
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
         });
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => mobileMenu.classList.add('hidden'));
+        });
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 100) {
+                navbar.classList.add('shadow-xl');
+            } else {
+                navbar.classList.remove('shadow-xl');
+            }
+        });
+
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.story-card').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            card.style.transition = 'all 0.6s ease-out';
+            observer.observe(card);
+        });
+
+        // Counter animation for stats
+        function animateCounter(element, target, duration = 2000) {
+            let start = 0;
+            const increment = target / (duration / 16);
+            const timer = setInterval(() => {
+                start += increment;
+                if (start >= target) {
+                    element.textContent = target + (target === 300 || target === 150 || target === 50 ? '+' : '');
+                    clearInterval(timer);
+                } else {
+                    element.textContent = Math.floor(start);
+                }
+            }, 16);
+        }
+
+        const statsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const counter = entry.target.querySelector('[data-count]');
+                    if (counter && !counter.classList.contains('counted')) {
+                        const target = parseInt(counter.dataset.count);
+                        animateCounter(counter, target);
+                        counter.classList.add('counted');
+                    }
+                }
+            });
+        }, { threshold: 0.5 });
+
+        document.querySelectorAll('.interactive-stat').forEach(stat => {
+            statsObserver.observe(stat);
+        });
+
+        // Testimonial Slider
+        const slider = document.getElementById('testimonialSlider');
+        const slides = slider.querySelectorAll('.testimonial-slide');
+        const dotsContainer = document.getElementById('testimonialDots');
+        let currentSlide = 0;
+
+        // Create dots
+        slides.forEach((_, index) => {
+            const dot = document.createElement('button');
+            dot.className = 'w-3 h-3 rounded-full bg-white transition-all ' + (index === 0 ? 'bg-opacity-100' : 'bg-opacity-30');
+            dot.addEventListener('click', () => goToSlide(index));
+            dotsContainer.appendChild(dot);
+        });
+
+        function goToSlide(index) {
+            currentSlide = index;
+            slider.scrollTo({
+                left: slides[index].offsetLeft,
+                behavior: 'smooth'
+            });
+            updateDots();
+        }
+
+        function updateDots() {
+            dotsContainer.querySelectorAll('button').forEach((dot, index) => {
+                if (index === currentSlide) {
+                    dot.classList.remove('bg-opacity-30');
+                    dot.classList.add('bg-opacity-100');
+                } else {
+                    dot.classList.remove('bg-opacity-100');
+                    dot.classList.add('bg-opacity-30');
+                }
+            });
+        }
+
+        // Auto-advance testimonials
+        setInterval(() => {
+            currentSlide = (currentSlide + 1) % slides.length;
+            goToSlide(currentSlide);
+        }, 5000);
+
+        // Scroll listener for testimonials
+        slider.addEventListener('scroll', () => {
+            const scrollPosition = slider.scrollLeft;
+            const slideWidth = slides[0].offsetWidth;
+            const newIndex = Math.round(scrollPosition / slideWidth);
+            if (newIndex !== currentSlide) {
+                currentSlide = newIndex;
+                updateDots();
+            }
+        });
+
+        // Logo fallback
         document.getElementById('main-logo').onerror = function() {
             this.style.display = 'none';
             const placeholder = document.createElement('div');
@@ -361,6 +1147,96 @@
             placeholder.innerHTML = '<svg class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path></svg>';
             this.parentElement.appendChild(placeholder);
         };
+
+        // Smooth scroll with offset for fixed navbar
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    const offsetTop = target.offsetTop - 100;
+                    window.scrollTo({
+                        top: offsetTop,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // FAQ Toggle Function
+        function toggleFAQ(button) {
+            const answer = button.nextElementSibling;
+            const icon = button.querySelector('svg');
+            
+            // Close all other FAQs
+            document.querySelectorAll('.faq-answer').forEach(item => {
+                if (item !== answer) {
+                    item.classList.add('hidden');
+                    item.previousElementSibling.querySelector('svg').classList.remove('rotate-180');
+                }
+            });
+            
+            // Toggle current FAQ
+            answer.classList.toggle('hidden');
+            icon.classList.toggle('rotate-180');
+        }
+
+        // Image lazy loading optimization
+        document.querySelectorAll('img').forEach(img => {
+            img.loading = 'lazy';
+        });
+
+        // Add active state to navigation links
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (window.pageYOffset >= sectionTop - 200) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('text-pink-600');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('text-pink-600');
+                }
+            });
+        });
+
+        // Back to Top Button
+        const backToTop = document.getElementById('backToTop');
+        
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTop.classList.remove('opacity-0', 'invisible');
+                backToTop.classList.add('opacity-100', 'visible');
+            } else {
+                backToTop.classList.add('opacity-0', 'invisible');
+                backToTop.classList.remove('opacity-100', 'visible');
+            }
+        });
+
+        backToTop.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // Parallax effect for hero section
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const parallaxElements = document.querySelectorAll('.animate-fade-in-up, .animate-slide-in');
+            parallaxElements.forEach(el => {
+                const speed = 0.5;
+                el.style.transform = `translateY(${scrolled * speed}px)`;
+            });
+        });
     </script>
 </body>
 </html>
